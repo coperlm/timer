@@ -14,31 +14,95 @@ const wss = new WebSocket.Server({ server });
 // 存储所有连接的客户端
 const clients = new Map();
 
-// 存储计时器数据
-let timersData = {
-    timer1: { name: '科研', totalSeconds: 10800, remainingSeconds: 10800, running: false },
-    timer2: { name: '考研', totalSeconds: 10800, remainingSeconds: 10800, running: false },
-    timer3: { name: '其他', totalSeconds: 10800, remainingSeconds: 10800, running: false }
-};
-
-// 学习时间统计数据
-let studyStatsData = {
-    date: getCurrentDateString(),
-    timers: {
-        '科研': { totalSeconds: 10800, studiedSeconds: 0 },
-        '考研': { totalSeconds: 10800, studiedSeconds: 0 },
-        '其他': { totalSeconds: 10800, studiedSeconds: 0 }
-    }
-};
-
-// 每天重置计时器的日期标记
-let currentDayKey = getCurrentDayKey();
-
 // 确保数据目录存在
 const dataDir = path.join(__dirname, '..', 'data');
 if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
+
+// 从JSON文件加载数据或使用默认值
+function loadTimerDataFromFile() {
+    const today = getCurrentDateString();
+    const statsFilePath = path.join(dataDir, `stats_${today}.json`);
+    
+    try {
+        if (fs.existsSync(statsFilePath)) {
+            const fileData = JSON.parse(fs.readFileSync(statsFilePath, 'utf-8'));
+            
+            // 构建计时器数据对象
+            const loadedTimersData = {
+                timer1: { 
+                    name: '科研', 
+                    totalSeconds: 10800,
+                    remainingSeconds: 10800,
+                    running: false 
+                },
+                timer2: { 
+                    name: '考研', 
+                    totalSeconds: 10800,
+                    remainingSeconds: 10800, 
+                    running: false 
+                },
+                timer3: { 
+                    name: '其他', 
+                    totalSeconds: 10800,
+                    remainingSeconds: 10800,
+                    running: false 
+                }
+            };
+            
+            // 更新剩余时间和总时间（根据JSON文件）
+            if (fileData.timers) {
+                Object.entries(fileData.timers).forEach(([name, data]) => {
+                    const totalSeconds = Math.round(data.totalHours * 3600);
+                    const studiedSeconds = Math.round(data.studiedHours * 3600);
+                    const remainingSeconds = totalSeconds - studiedSeconds;
+                    
+                    // 更新对应名称的计时器
+                    if (name === '科研') {
+                        loadedTimersData.timer1.totalSeconds = totalSeconds;
+                        loadedTimersData.timer1.remainingSeconds = remainingSeconds > 0 ? remainingSeconds : 0;
+                    } else if (name === '考研') {
+                        loadedTimersData.timer2.totalSeconds = totalSeconds;
+                        loadedTimersData.timer2.remainingSeconds = remainingSeconds > 0 ? remainingSeconds : 0;
+                    } else if (name === '其他') {
+                        loadedTimersData.timer3.totalSeconds = totalSeconds;
+                        loadedTimersData.timer3.remainingSeconds = remainingSeconds > 0 ? remainingSeconds : 0;
+                    }
+                });
+            }
+            
+            console.log(`已从文件 ${statsFilePath} 加载计时器数据`);
+            return loadedTimersData;
+        }
+    } catch (error) {
+        console.error('从JSON文件加载计时器数据失败:', error);
+    }
+    
+    // 如果无法从文件加载，则返回默认计时器数据
+    console.log('使用默认计时器数据');
+    return {
+        timer1: { name: '科研', totalSeconds: 10800, remainingSeconds: 10800, running: false },
+        timer2: { name: '考研', totalSeconds: 10800, remainingSeconds: 10800, running: false },
+        timer3: { name: '其他', totalSeconds: 10800, remainingSeconds: 10800, running: false }
+    };
+}
+
+// 存储计时器数据
+let timersData = loadTimerDataFromFile();
+
+// 学习时间统计数据
+let studyStatsData = {
+    date: getCurrentDateString(),
+    timers: {
+        '科研': { totalSeconds: timersData.timer1.totalSeconds, studiedSeconds: timersData.timer1.totalSeconds - timersData.timer1.remainingSeconds },
+        '考研': { totalSeconds: timersData.timer2.totalSeconds, studiedSeconds: timersData.timer2.totalSeconds - timersData.timer2.remainingSeconds },
+        '其他': { totalSeconds: timersData.timer3.totalSeconds, studiedSeconds: timersData.timer3.totalSeconds - timersData.timer3.remainingSeconds }
+    }
+};
+
+// 每天重置计时器的日期标记
+let currentDayKey = getCurrentDayKey();
 
 // 提供静态文件
 app.use(express.static(path.join(__dirname, '..')));
@@ -126,7 +190,7 @@ app.post('/api/timers/:id', (req, res) => {
         timersData[id] = { ...timersData[id], ...timerData };
         
         // 更新学习统计数据
-        updateTimerStats(timersData[id].name, oldRemainingSeconds, timersData[id].remainingSeconds);
+        updateTimerStats(timersData[id].name, oldRemainingSeconds, timersData[id].remainingSeconds );
         
         // 向所有客户端广播更新
         broadcastTimerUpdate(id, timersData[id]);
