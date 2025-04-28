@@ -409,14 +409,17 @@ button {
 }
 
 .timer-display {
-    font-size: 4rem;
+    font-size: min(3.2rem, 8vw); /* 缩小字体大小 */
     text-align: center;
-    margin: 25px 0;
+    margin: 20px 0;
     font-weight: bold;
     font-family: 'Courier New', monospace;
     color: #2c3e50;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* 减小阴影 */
     transition: color 0.5s;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
 }
 
 .timer-card.finished .timer-display {
@@ -449,7 +452,8 @@ button {
 
 @media (max-width: 767px) {
     .timer-display {
-        font-size: 3rem;
+        font-size: min(2.8rem, 8vw);
+        margin: 15px 0;
     }
     
     .connection-status {
@@ -475,6 +479,18 @@ button {
     #toggle-stats-btn, .report-btn {
         width: 100%;
         max-width: 250px;
+    }
+}
+
+/* 超小屏幕的特殊处理 */
+@media (max-width: 400px) {
+    .timer-display {
+        font-size: min(2.2rem, 7vw);
+        margin: 8px 0;
+    }
+    
+    .timer-card {
+        padding: 15px; /* 减少内边距增加空间 */
     }
 }
 
