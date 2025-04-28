@@ -61,6 +61,9 @@ h3 {
 .stats-toggle {
     text-align: center;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
 }
 
 #toggle-stats-btn {
@@ -75,6 +78,25 @@ h3 {
 
 #toggle-stats-btn:hover {
     background-color: #2980b9;
+}
+
+.report-btn {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.report-btn:hover {
+    background-color: #27ae60;
+}
+
+.report-btn.loading {
+    background-color: #95a5a6;
+    cursor: wait;
 }
 
 /* 统计区域 */

@@ -28,6 +28,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // 初始化生成报告按钮
+    const generateReportBtn = document.getElementById('generate-report-btn');
+    
+    generateReportBtn.addEventListener('click', () => {
+        if (generateReportBtn.classList.contains('loading')) {
+            return;  // 防止重复点击
+        }
+        
+        // 设置按钮为加载状态
+        generateReportBtn.classList.add('loading');
+        generateReportBtn.textContent = '正在生成报告...';
+        
+        // 调用API生成报告
+        fetch('/api/generate-report', { method: 'POST' })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('生成报告失败');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // 打开生成的HTML报告
+                    window.open(data.reportUrl, '_blank');
+                    generateReportBtn.textContent = '生成学习统计报告';
+                } else {
+                    alert('生成报告失败: ' + data.message);
+                    generateReportBtn.textContent = '重试生成报告';
+                }
+            })
+            .catch(error => {
+                console.error('生成报告错误:', error);
+                alert('生成报告出错，请稍后再试');
+                generateReportBtn.textContent = '重试生成报告';
+            })
+            .finally(() => {
+                generateReportBtn.classList.remove('loading');
+            });
+    });
+    
     // 连接到服务器
     function connectWebSocket() {
         // 获取当前主机地址（用于确保在服务器上运行时使用正确的URL）

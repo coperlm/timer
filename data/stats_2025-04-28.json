@@ -3,10 +3,10 @@
   "timers": {
     "科研": {
       "totalHours": 3,
-      "studiedHours": 0.1,
-      "studiedMinutes": 6,
-      "completionPercentage": 3.3,
-      "remainingHours": 2.9
+      "studiedHours": 0,
+      "studiedMinutes": 0,
+      "completionPercentage": 0.1,
+      "remainingHours": 3
     },
     "考研": {
       "totalHours": 3,
@@ -25,8 +25,8 @@
   },
   "summary": {
     "totalPossibleHours": 9,
-    "totalStudiedHours": 0.1,
-    "totalStudiedMinutes": 6,
-    "overallCompletion": 1.1
+    "totalStudiedHours": 0,
+    "totalStudiedMinutes": 0,
+    "overallCompletion": 0.1
   }
 }

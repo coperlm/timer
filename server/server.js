@@ -55,6 +55,64 @@ app.get('/api/stats', (req, res) => {
     res.json(studyStatsData);
 });
 
+// API 端点：生成学习统计报告
+app.post('/api/generate-report', (req, res) => {
+    try {
+        // 保存最新的学习统计数据
+        saveStudyStatsToFile();
+        
+        // 使用子进程运行Python脚本
+        const { spawn } = require('child_process');
+        const pythonProcess = spawn('python', ['collect.py'], {
+            cwd: path.join(__dirname, '..'),
+            stdio: 'pipe'
+        });
+        
+        let scriptOutput = '';
+        let scriptError = '';
+        
+        // 收集脚本标准输出
+        pythonProcess.stdout.on('data', (data) => {
+            scriptOutput += data.toString();
+        });
+        
+        // 收集脚本标准错误
+        pythonProcess.stderr.on('data', (data) => {
+            scriptError += data.toString();
+        });
+        
+        // 脚本执行完毕后的处理
+        pythonProcess.on('close', (code) => {
+            if (code === 0) {
+                // 成功生成报告
+                console.log('学习统计报告生成成功');
+                
+                // 返回成功状态和报告URL
+                res.json({
+                    success: true,
+                    reportUrl: '/学习时间统计报告.html',
+                    output: scriptOutput
+                });
+            } else {
+                // 生成报告失败
+                console.error('学习统计报告生成失败:', scriptError);
+                res.status(500).json({
+                    success: false,
+                    message: '生成报告失败，请查看服务器日志',
+                    error: scriptError
+                });
+            }
+        });
+    } catch (error) {
+        console.error('启动生成报告失败:', error);
+        res.status(500).json({
+            success: false,
+            message: '启动生成报告程序失败',
+            error: error.message
+        });
+    }
+});
+
 // API 端点：更新计时器状态
 app.post('/api/timers/:id', (req, res) => {
     const { id } = req.params;
