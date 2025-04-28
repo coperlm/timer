@@ -225,14 +225,14 @@ button {
     transition: background-color 0.2s;
 }
 
-.start-btn {
+.toggle-btn {
     background-color: #27ae60;
     color: white;
+    width: 80px;
 }
 
-.pause-btn {
+.toggle-btn.running {
     background-color: #f39c12;
-    color: white;
 }
 
 button:hover {

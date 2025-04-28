@@ -301,8 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.name = timerTitles[id];
             
             this.displayElement = this.element.querySelector('.timer-display');
-            this.startBtn = this.element.querySelector('.start-btn');
-            this.pauseBtn = this.element.querySelector('.pause-btn');
+            this.toggleBtn = this.element.querySelector('.toggle-btn');
             
             this.interval = null;
             this.running = false;
@@ -313,17 +312,26 @@ document.addEventListener('DOMContentLoaded', () => {
             this.setupEventListeners();
             this.loadFromLocalStorage();
             this.updateDisplay();
+            this.updateButtonState();
         }
         
         setupEventListeners() {
-            this.startBtn.addEventListener('click', () => this.start());
-            this.pauseBtn.addEventListener('click', () => this.pause());
+            this.toggleBtn.addEventListener('click', () => this.toggle());
+        }
+        
+        toggle() {
+            if (this.running) {
+                this.pause();
+            } else {
+                this.start();
+            }
         }
         
         start() {
             if (this.running) return;
             
             this.running = true;
+            this.updateButtonState();
             this.lastSyncTime = Date.now();
             this.interval = setInterval(() => {
                 this.remainingSeconds--;
@@ -355,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!this.running) return;
             
             this.running = false;
+            this.updateButtonState();
             clearInterval(this.interval);
             this.saveToLocalStorage();
             this.syncToServer();
@@ -362,6 +371,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // 更新统计数据（如果统计面板可见）
             if (!statsContainer.classList.contains('hidden')) {
                 fetchStudyStats();
+            }
+        }
+        
+        updateButtonState() {
+            if (this.running) {
+                this.toggleBtn.textContent = '暂停';
+                this.toggleBtn.classList.add('running');
+            } else {
+                this.toggleBtn.textContent = '开始';
+                this.toggleBtn.classList.remove('running');
             }
         }
         
