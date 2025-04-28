@@ -1,0 +1,256 @@
+/* 基本样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+h2 {
+    margin-top: 10px;
+    font-size: 1.5rem;
+}
+
+h3 {
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+/* 连接状态指示器 */
+.connection-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    z-index: 1000;
+    transition: opacity 1s;
+}
+
+.connected {
+    background-color: #27ae60;
+}
+
+.disconnected {
+    background-color: #e74c3c;
+}
+
+/* 统计切换按钮 */
+.stats-toggle {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#toggle-stats-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#toggle-stats-btn:hover {
+    background-color: #2980b9;
+}
+
+/* 统计区域 */
+.stats-container {
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    max-height: 1000px;
+    overflow: hidden;
+}
+
+.stats-container.hidden {
+    max-height: 0;
+    margin-bottom: 0;
+    opacity: 0;
+}
+
+.stats-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.stats-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1 0 calc(50% - 15px);
+    min-width: 250px;
+}
+
+.stats-card h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.stats-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.stats-value {
+    font-weight: bold;
+}
+
+.stats-progress {
+    height: 8px;
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #3498db;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.total-stats {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+}
+
+.total-stats .progress-bar {
+    background-color: #27ae60;
+}
+
+/* 倒计时器容器样式 */
+.timers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 倒计时卡片样式 */
+.timer-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.timer-card.finished {
+    border: 2px solid #e74c3c;
+}
+
+.timer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.timer-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.start-btn {
+    background-color: #27ae60;
+    color: white;
+}
+
+.pause-btn {
+    background-color: #f39c12;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.timer-display {
+    font-size: 3.5rem;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+/* 响应式设计 */
+@media (min-width: 768px) {
+    .timers-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .timer-card {
+        flex: 1 0 calc(33.333% - 20px);
+        min-width: 300px;
+    }
+}
+
+@media (max-width: 767px) {
+    .timer-display {
+        font-size: 2.5rem;
+    }
+    
+    .connection-status {
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .stats-card {
+        flex: 1 0 100%;
+    }
+}

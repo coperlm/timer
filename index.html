@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习倒计时</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>学习倒计时</h1>
+        
+        <div class="stats-toggle">
+            <button id="toggle-stats-btn">显示学习统计</button>
+        </div>
+        
+        <div id="stats-container" class="stats-container hidden">
+            <h2>今日学习统计</h2>
+            <div class="stats-cards">
+                <div class="stats-card" id="stats-科研">
+                    <h3>科研</h3>
+                    <div class="stats-content">
+                        <div class="stats-row">
+                            <span class="stats-label">已学习:</span>
+                            <span class="stats-value studied-time">0小时0分钟</span>
+                        </div>
+                        <div class="stats-row">
+                            <span class="stats-label">完成率:</span>
+                            <span class="stats-value completion-rate">0%</span>
+                        </div>
+                        <div class="stats-progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card" id="stats-考研">
+                    <h3>考研</h3>
+                    <div class="stats-content">
+                        <div class="stats-row">
+                            <span class="stats-label">已学习:</span>
+                            <span class="stats-value studied-time">0小时0分钟</span>
+                        </div>
+                        <div class="stats-row">
+                            <span class="stats-label">完成率:</span>
+                            <span class="stats-value completion-rate">0%</span>
+                        </div>
+                        <div class="stats-progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card" id="stats-其他">
+                    <h3>其他</h3>
+                    <div class="stats-content">
+                        <div class="stats-row">
+                            <span class="stats-label">已学习:</span>
+                            <span class="stats-value studied-time">0小时0分钟</span>
+                        </div>
+                        <div class="stats-row">
+                            <span class="stats-label">完成率:</span>
+                            <span class="stats-value completion-rate">0%</span>
+                        </div>
+                        <div class="stats-progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card total-stats">
+                    <h3>总计</h3>
+                    <div class="stats-content">
+                        <div class="stats-row">
+                            <span class="stats-label">已学习:</span>
+                            <span class="stats-value total-studied-time">0小时0分钟</span>
+                        </div>
+                        <div class="stats-row">
+                            <span class="stats-label">总完成率:</span>
+                            <span class="stats-value total-completion-rate">0%</span>
+                        </div>
+                        <div class="stats-progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timers-container">
+            <!-- 倒计时器1 - 科研 -->
+            <div class="timer-card" id="timer1">
+                <div class="timer-header">
+                    <h3 class="timer-title">科研</h3>
+                    <div class="timer-controls">
+                        <button class="start-btn">开始</button>
+                        <button class="pause-btn">暂停</button>
+                    </div>
+                </div>
+                <div class="timer-display">03:00:00</div>
+            </div>
+
+            <!-- 倒计时器2 - 考研 -->
+            <div class="timer-card" id="timer2">
+                <div class="timer-header">
+                    <h3 class="timer-title">考研</h3>
+                    <div class="timer-controls">
+                        <button class="start-btn">开始</button>
+                        <button class="pause-btn">暂停</button>
+                    </div>
+                </div>
+                <div class="timer-display">03:00:00</div>
+            </div>
+
+            <!-- 倒计时器3 - 其他 -->
+            <div class="timer-card" id="timer3">
+                <div class="timer-header">
+                    <h3 class="timer-title">其他</h3>
+                    <div class="timer-controls">
+                        <button class="start-btn">开始</button>
+                        <button class="pause-btn">暂停</button>
+                    </div>
+                </div>
+                <div class="timer-display">03:00:00</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/script.js"></script>
+</body>
+</html>
