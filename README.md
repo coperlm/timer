@@ -2,7 +2,7 @@
 
 一个简单高效的学习时间管理应用，帮助您跟踪和优化日常学习时间。系统提供三个独立的倒计时器（科研、考研和其他），每天自动统计学习时间并保存为JSON文件。
 
-![界面预览](https://via.placeholder.com/800x400/3498db/FFFFFF?text=学习时间管理系统)
+![](pic\image-20250428142139984.png)
 
 ## 项目特点
 
@@ -33,8 +33,8 @@
 
 1. 克隆仓库
    ```bash
-   git clone https://github.com/您的用户名/study-timer.git
-   cd study-timer
+   git clone https://github.com/coperlm/timer.git
+   cd timer
    ```
 
 2. 安装依赖
