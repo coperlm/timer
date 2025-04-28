@@ -117,6 +117,20 @@ wss.on('connection', (ws, req) => {
         console.log(`客户端 ${clientId} 已断开连接`);
         clients.delete(clientId);
     });
+    
+    // 添加错误处理，防止未处理的错误导致服务器崩溃
+    ws.on('error', (error) => {
+        console.error(`客户端 ${clientId} 连接错误:`, error.message);
+        // 尝试优雅地关闭连接
+        try {
+            clients.delete(clientId);
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.close();
+            }
+        } catch (closeError) {
+            console.error(`关闭连接时出错: ${closeError.message}`);
+        }
+    });
 });
 
 // 处理客户端消息
