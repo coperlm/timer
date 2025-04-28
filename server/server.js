@@ -186,6 +186,11 @@ app.post('/api/timers/:id', (req, res) => {
         // 更新计时器数据之前记录旧的剩余时间
         const oldRemainingSeconds = timersData[id].remainingSeconds;
         
+        // 确保新的剩余时间不为负数
+        if (timerData.remainingSeconds !== undefined) {
+            timerData.remainingSeconds = Math.max(0, timerData.remainingSeconds);
+        }
+        
         // 更新计时器数据
         timersData[id] = { ...timersData[id], ...timerData };
         
@@ -265,6 +270,11 @@ function handleClientMessage(clientId, message) {
                 // 更新计时器数据之前记录旧的剩余时间
                 const oldRemainingSeconds = timersData[timerId].remainingSeconds;
                 
+                // 确保新的剩余时间不为负数
+                if (data.remainingSeconds !== undefined) {
+                    data.remainingSeconds = Math.max(0, data.remainingSeconds);
+                }
+                
                 // 更新计时器数据
                 timersData[timerId] = { ...timersData[timerId], ...data };
                 
@@ -320,6 +330,10 @@ function getCurrentDateString() {
 
 // 更新单个计时器的学习统计数据
 function updateTimerStats(timerName, oldRemainingSeconds, newRemainingSeconds) {
+    // 确保剩余时间不为负数
+    newRemainingSeconds = Math.max(0, newRemainingSeconds);
+    oldRemainingSeconds = Math.max(0, oldRemainingSeconds);
+    
     // 只计算时间减少的部分（即学习时间增加的部分）
     if (newRemainingSeconds < oldRemainingSeconds) {
         const studiedTime = oldRemainingSeconds - newRemainingSeconds;
@@ -370,12 +384,17 @@ function saveStudyStatsToFile() {
     };
     
     Object.entries(studyStatsData.timers).forEach(([name, data]) => {
+        // 确保数据不为负数
+        const studiedSeconds = Math.max(0, data.studiedSeconds);
+        const totalSeconds = Math.max(studiedSeconds, data.totalSeconds);
+        const remainingSeconds = Math.max(0, totalSeconds - studiedSeconds);
+        
         dataToSave.timers[name] = {
-            totalHours: parseFloat((data.totalSeconds / 3600).toFixed(2)),
-            studiedHours: parseFloat((data.studiedSeconds / 3600).toFixed(2)),
-            studiedMinutes: Math.floor(data.studiedSeconds / 60),
-            completionPercentage: parseFloat(((data.studiedSeconds / data.totalSeconds) * 100).toFixed(1)),
-            remainingHours: parseFloat(((data.totalSeconds - data.studiedSeconds) / 3600).toFixed(2))
+            totalHours: parseFloat((totalSeconds / 3600).toFixed(2)),
+            studiedHours: parseFloat((studiedSeconds / 3600).toFixed(2)),
+            studiedMinutes: Math.floor(studiedSeconds / 60),
+            completionPercentage: parseFloat(((studiedSeconds / totalSeconds) * 100).toFixed(1)),
+            remainingHours: parseFloat((remainingSeconds / 3600).toFixed(2))
         };
     });
     
@@ -384,8 +403,8 @@ function saveStudyStatsToFile() {
     let totalTime = 0;
     
     Object.values(studyStatsData.timers).forEach(data => {
-        totalStudied += data.studiedSeconds;
-        totalTime += data.totalSeconds;
+        totalStudied += Math.max(0, data.studiedSeconds);
+        totalTime += Math.max(data.studiedSeconds, data.totalSeconds);
     });
     
     dataToSave.summary = {

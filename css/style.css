@@ -7,10 +7,11 @@
 }
 
 body {
-    background-color: #f5f5f5;
+    background-color: #f8fafc;
     color: #333;
     line-height: 1.6;
     padding: 20px;
+    transition: background-color 0.3s ease;
 }
 
 .container {
@@ -24,16 +25,36 @@ h1, h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #2c3e50;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+h1 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
 }
 
 h2 {
     margin-top: 10px;
     font-size: 1.5rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
 }
 
 h3 {
     color: #2c3e50;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 /* 连接状态指示器 */
@@ -42,67 +63,93 @@ h3 {
     top: 20px;
     right: 20px;
     padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 20px;
     color: white;
     font-weight: bold;
     z-index: 1000;
-    transition: opacity 1s;
+    transition: all 0.5s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .connected {
     background-color: #27ae60;
+    animation: pulse 2s infinite;
 }
 
 .disconnected {
     background-color: #e74c3c;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
 }
 
 /* 统计切换按钮 */
 .stats-toggle {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     display: flex;
     justify-content: center;
     gap: 15px;
 }
 
 #toggle-stats-btn {
-    background-color: #3498db;
+    background: linear-gradient(135deg, #3498db, #2980b9);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 10px 25px;
+    border-radius: 25px;
     cursor: pointer;
     font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
 }
 
 #toggle-stats-btn:hover {
-    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
 }
 
 .report-btn {
-    background-color: #2ecc71;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 10px 25px;
+    border-radius: 25px;
     cursor: pointer;
     font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(46, 204, 113, 0.3);
 }
 
 .report-btn:hover {
-    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(46, 204, 113, 0.4);
 }
 
 .report-btn.loading {
-    background-color: #95a5a6;
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
     cursor: wait;
+    transform: none;
+    box-shadow: 0 4px 6px rgba(149, 165, 166, 0.3);
 }
 
 /* 统计区域 */
 .stats-container {
-    margin-bottom: 30px;
-    transition: all 0.3s ease;
+    margin-bottom: 40px;
+    transition: all 0.5s ease;
     max-height: 1000px;
     overflow: hidden;
 }
@@ -116,135 +163,271 @@ h3 {
 .stats-cards {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     justify-content: space-between;
 }
 
 .stats-card {
     background-color: white;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     flex: 1 0 calc(50% - 15px);
     min-width: 250px;
+    transition: all 0.3s ease;
+    border-top: 4px solid transparent;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+#stats-科研 {
+    border-top-color: #3498db;
+}
+
+#stats-考研 {
+    border-top-color: #9b59b6;
+}
+
+#stats-其他 {
+    border-top-color: #e67e22;
 }
 
 .stats-card h3 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #2c3e50;
     border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
+    font-size: 1.2rem;
 }
 
 .stats-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    align-items: center;
 }
 
 .stats-label {
-    font-weight: 500;
+    font-weight: 600;
     color: #555;
 }
 
 .stats-value {
     font-weight: bold;
+    color: #2c3e50;
+    background: rgba(240, 240, 240, 0.5);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.95rem;
 }
 
 .stats-progress {
-    height: 8px;
+    height: 10px;
     background-color: #ecf0f1;
-    border-radius: 4px;
+    border-radius: 5px;
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: 15px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
+/* 彩虹渐变进度条 */
 .progress-bar {
     height: 100%;
-    background-color: #3498db;
+    background: linear-gradient(to right, #ff9ff3, #feca57, #ff6b6b, #48dbfb, #1dd1a1);
+    background-size: 500% 100%;
+    animation: gradientMove 3s ease infinite;
     width: 0%;
-    transition: width 0.5s ease;
+    transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    border-radius: 5px;
+}
+
+#stats-科研 .progress-bar {
+    background: linear-gradient(to right, #3498db, #2980b9, #2c3e50);
+    background-size: 200% 100%;
+}
+
+#stats-考研 .progress-bar {
+    background: linear-gradient(to right, #9b59b6, #8e44ad, #6a1b9a);
+    background-size: 200% 100%;
+}
+
+#stats-其他 .progress-bar {
+    background: linear-gradient(to right, #e67e22, #d35400, #a04000);
+    background-size: 200% 100%;
 }
 
 .total-stats {
     background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-top: 4px solid #16a085;
 }
 
 .total-stats .progress-bar {
-    background-color: #27ae60;
+    background: linear-gradient(to right, #16a085, #2ecc71, #27ae60);
+    background-size: 200% 100%;
+}
+
+/* 进度条不同阶段的颜色 */
+.progress-low {
+    background: linear-gradient(to right, #ff6b6b, #ff7f50);
+}
+
+.progress-medium {
+    background: linear-gradient(to right, #feca57, #fdcb6e);
+}
+
+.progress-high {
+    background: linear-gradient(to right, #1dd1a1, #10ac84);
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 0%; }
+    100% { background-position: 0% 0%; }
 }
 
 /* 倒计时器容器样式 */
 .timers-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
 }
 
 /* 倒计时卡片样式 */
 .timer-card {
     background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.timer-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.timer-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    opacity: 0.8;
+}
+
+#timer1::before {
+    background: linear-gradient(to right, #3498db, #2980b9);
+}
+
+#timer2::before {
+    background: linear-gradient(to right, #9b59b6, #8e44ad);
+}
+
+#timer3::before {
+    background: linear-gradient(to right, #e67e22, #d35400);
 }
 
 .timer-card.finished {
-    border: 2px solid #e74c3c;
+    border: none;
+    box-shadow: 0 10px 20px rgba(231, 76, 60, 0.2);
+}
+
+.timer-card.finished::before {
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    height: 5px;
+    animation: pulse-red 1.5s infinite;
+}
+
+@keyframes pulse-red {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }
 
 .timer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
 }
 
 .timer-title {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: bold;
     color: #2c3e50;
     margin: 0;
+    position: relative;
+    display: inline-block;
 }
 
 .timer-controls {
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 
 button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 25px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
 }
 
 .toggle-btn {
-    background-color: #27ae60;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
     color: white;
-    width: 80px;
+    width: 90px;
+    box-shadow: 0 4px 6px rgba(46, 204, 113, 0.3);
+}
+
+.toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(46, 204, 113, 0.4);
 }
 
 .toggle-btn.running {
-    background-color: #f39c12;
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+    box-shadow: 0 4px 6px rgba(243, 156, 18, 0.3);
 }
 
-button:hover {
-    opacity: 0.9;
+.toggle-btn.running:hover {
+    box-shadow: 0 6px 12px rgba(243, 156, 18, 0.4);
 }
 
 .timer-display {
-    font-size: 3.5rem;
+    font-size: 4rem;
     text-align: center;
-    margin: 20px 0;
+    margin: 25px 0;
     font-weight: bold;
-    font-family: monospace;
+    font-family: 'Courier New', monospace;
+    color: #2c3e50;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    transition: color 0.5s;
+}
+
+.timer-card.finished .timer-display {
+    color: #e74c3c;
+    animation: pulse-text 1.5s infinite;
+}
+
+@keyframes pulse-text {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
 }
 
 /* 响应式设计 */
@@ -258,21 +441,135 @@ button:hover {
         flex: 1 0 calc(33.333% - 20px);
         min-width: 300px;
     }
+
+    h1 {
+        font-size: 2.5rem;
+    }
 }
 
 @media (max-width: 767px) {
     .timer-display {
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
     
     .connection-status {
         top: 10px;
         right: 10px;
-        padding: 5px 10px;
+        padding: 6px 12px;
         font-size: 0.9rem;
     }
     
     .stats-card {
         flex: 1 0 100%;
     }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .stats-toggle {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #toggle-stats-btn, .report-btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+/* 紧急状态下的计时器样式 */
+.timer-card.urgent::before {
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    height: 5px;
+    animation: pulse-red 1.5s infinite;
+}
+
+.timer-card.urgent {
+    box-shadow: 0 10px 20px rgba(231, 76, 60, 0.15);
+}
+
+/* 主题切换按钮 */
+.theme-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.dark-mode .theme-toggle-btn {
+    background-color: #f1c40f;
+    color: #2c3e50;
+}
+
+/* 增强暗黑模式样式 */
+.dark-mode {
+    background-color: #1a1a2e;
+    color: #e6e6e6;
+}
+
+.dark-mode .timer-card,
+.dark-mode .stats-card {
+    background-color: #16213e;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode h1, 
+.dark-mode h2, 
+.dark-mode h3, 
+.dark-mode .timer-title, 
+.dark-mode .timer-display {
+    color: #e6e6e6;
+}
+
+.dark-mode .stats-value {
+    background: rgba(0, 0, 0, 0.2);
+    color: #e6e6e6;
+}
+
+.dark-mode .stats-progress {
+    background-color: #2c3e50;
+}
+
+.dark-mode .timer-card::before {
+    opacity: 1;
+}
+
+.dark-mode .toggle-btn {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.dark-mode .toggle-btn.running {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.dark-mode #toggle-stats-btn {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.dark-mode .report-btn {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.dark-mode .timer-card.urgent .timer-display,
+.dark-mode .timer-card.finished .timer-display {
+    color: #e74c3c;
 }

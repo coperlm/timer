@@ -261,6 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 进度条
                 const progressBar = statsCard.querySelector('.progress-bar');
                 progressBar.style.width = `${completionRate}%`;
+                
+                // 根据完成率调整进度条颜色类别
+                updateProgressBarClass(progressBar, parseFloat(completionRate));
             }
         });
         
@@ -284,6 +287,24 @@ document.addEventListener('DOMContentLoaded', () => {
         totalTimeElement.textContent = `${totalHours}小时${totalMinutes}分钟`;
         totalCompletionElement.textContent = `${totalCompletionRate}%`;
         totalProgressBar.style.width = `${totalCompletionRate}%`;
+        
+        // 根据总体完成率调整总进度条颜色
+        updateProgressBarClass(totalProgressBar, parseFloat(totalCompletionRate));
+    }
+    
+    // 根据进度值动态更新进度条样式
+    function updateProgressBarClass(progressBar, percentage) {
+        // 移除所有可能的类
+        progressBar.classList.remove('progress-low', 'progress-medium', 'progress-high');
+        
+        // 基于百分比添加对应的类
+        if (percentage < 30) {
+            progressBar.classList.add('progress-low');
+        } else if (percentage < 70) {
+            progressBar.classList.add('progress-medium');
+        } else {
+            progressBar.classList.add('progress-high');
+        }
     }
     
     // 定义倒计时器类
@@ -330,14 +351,26 @@ document.addEventListener('DOMContentLoaded', () => {
         start() {
             if (this.running) return;
             
+            // 特判：确保剩余时间不为负数
+            if (this.remainingSeconds <= 0) {
+                this.remainingSeconds = 0;
+                this.updateDisplay();
+                this.finish();
+                return;
+            }
+            
             this.running = true;
             this.updateButtonState();
             this.lastSyncTime = Date.now();
             this.interval = setInterval(() => {
                 this.remainingSeconds--;
+                
+                // 特判：确保剩余时间不为负数
                 if (this.remainingSeconds <= 0) {
+                    this.remainingSeconds = 0;
                     this.finish();
                 }
+                
                 this.updateDisplay();
                 
                 // 定期同步到服务器（每10秒）
@@ -495,19 +528,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     const currentTime = new Date().getTime();
                     const elapsedSeconds = Math.floor((currentTime - lastUpdated) / 1000);
                     
-                    // 更新剩余时间
+                    // 更新剩余时间，并确保不为负数
                     this.remainingSeconds = Math.max(0, data.remainingSeconds - elapsedSeconds);
                     
                     if (this.remainingSeconds <= 0) {
                         this.remainingSeconds = 0;
                         this.running = false;
                         this.element.classList.add('finished');
+                        
+                        // 如果当前正在运行，停止计时
+                        if (this.interval) {
+                            clearInterval(this.interval);
+                            this.interval = null;
+                        }
                     } else {
                         // 如果当前不在运行，则开始运行
                         if (!this.running) {
                             this.start();
                         } else {
-                            this.remainingSeconds = data.remainingSeconds;
+                            this.remainingSeconds = Math.max(0, data.remainingSeconds);
                         }
                     }
                 } else {
@@ -515,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (this.running) {
                         this.pause();
                     }
-                    this.remainingSeconds = data.remainingSeconds;
+                    this.remainingSeconds = Math.max(0, data.remainingSeconds);
                 }
             } else {
                 // 同步剩余时间（考虑运行状态）
@@ -524,8 +563,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const currentTime = new Date().getTime();
                     const elapsedSeconds = Math.floor((currentTime - lastUpdated) / 1000);
                     this.remainingSeconds = Math.max(0, data.remainingSeconds - elapsedSeconds);
+                    
+                    // 如果已经归零，停止计时
+                    if (this.remainingSeconds <= 0 && this.running) {
+                        this.remainingSeconds = 0;
+                        this.finish();
+                    }
                 } else {
-                    this.remainingSeconds = data.remainingSeconds;
+                    this.remainingSeconds = Math.max(0, data.remainingSeconds);
                 }
             }
             
@@ -571,6 +616,50 @@ document.addEventListener('DOMContentLoaded', () => {
         timer2.saveToLocalStorage();
         timer3.saveToLocalStorage();
     });
+    
+    // 添加计时器卡片动画效果
+    document.querySelectorAll('.timer-card').forEach(card => {
+        card.addEventListener('mouseover', () => {
+            card.style.transform = 'translateY(-5px)';
+            card.style.boxShadow = '0 15px 30px rgba(0,0,0,0.12)';
+        });
+        
+        card.addEventListener('mouseout', () => {
+            card.style.transform = '';
+            card.style.boxShadow = '';
+        });
+    });
+    
+    // 添加暗黑模式切换按钮
+    function setupDarkModeToggle() {
+        // 创建切换按钮
+        const darkModeBtn = document.createElement('button');
+        darkModeBtn.id = 'dark-mode-toggle';
+        darkModeBtn.innerHTML = '🌙';
+        darkModeBtn.title = '切换暗黑模式';
+        darkModeBtn.className = 'theme-toggle-btn';
+        
+        // 添加到页面
+        document.body.appendChild(darkModeBtn);
+        
+        // 从本地存储加载暗黑模式设置
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+            darkModeBtn.innerHTML = '☀️';
+        }
+        
+        // 添加点击事件处理
+        darkModeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            darkModeBtn.innerHTML = isDark ? '☀️' : '🌙';
+        });
+    }
+    
+    // 运行暗黑模式设置
+    setupDarkModeToggle();
     
     // 检测网络连接状态
     window.addEventListener('online', () => {
