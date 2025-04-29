@@ -14,6 +14,12 @@ const wss = new WebSocket.Server({ server });
 // 存储所有连接的客户端
 const clients = new Map();
 
+// 生成当前时间戳的辅助函数
+function getCurrentTimestamp() {
+    const now = new Date();
+    return `[${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+}
+
 // 确保数据目录存在
 const dataDir = path.join(__dirname, '..', 'data');
 if (!fs.existsSync(dataDir)) {
@@ -72,15 +78,15 @@ function loadTimerDataFromFile() {
                 });
             }
             
-            console.log(`已从文件 ${statsFilePath} 加载计时器数据`);
+            console.log(`${getCurrentTimestamp()} 已从文件 ${statsFilePath} 加载计时器数据`);
             return loadedTimersData;
         }
     } catch (error) {
-        console.error('从JSON文件加载计时器数据失败:', error);
+        console.error(`${getCurrentTimestamp()} 从JSON文件加载计时器数据失败:`, error);
     }
     
     // 如果无法从文件加载，则返回默认计时器数据
-    console.log('使用默认计时器数据');
+    console.log(`${getCurrentTimestamp()} 使用默认计时器数据`);
     return {
         timer1: { name: '科研', totalSeconds: 10800, remainingSeconds: 10800, running: false },
         timer2: { name: '考研', totalSeconds: 10800, remainingSeconds: 10800, running: false },
@@ -149,7 +155,7 @@ app.post('/api/generate-report', (req, res) => {
         pythonProcess.on('close', (code) => {
             if (code === 0) {
                 // 成功生成报告
-                console.log('学习统计报告生成成功');
+                console.log(`${getCurrentTimestamp()} 学习统计报告生成成功`);
                 
                 // 返回成功状态和报告URL
                 res.json({
@@ -159,7 +165,7 @@ app.post('/api/generate-report', (req, res) => {
                 });
             } else {
                 // 生成报告失败
-                console.error('学习统计报告生成失败:', scriptError);
+                console.error(`${getCurrentTimestamp()} 学习统计报告生成失败:`, scriptError);
                 res.status(500).json({
                     success: false,
                     message: '生成报告失败，请查看服务器日志',
@@ -168,7 +174,7 @@ app.post('/api/generate-report', (req, res) => {
             }
         });
     } catch (error) {
-        console.error('启动生成报告失败:', error);
+        console.error(`${getCurrentTimestamp()} 启动生成报告失败:`, error);
         res.status(500).json({
             success: false,
             message: '启动生成报告程序失败',
@@ -216,7 +222,7 @@ wss.on('connection', (ws, req) => {
         lastActive: Date.now()
     });
     
-    console.log(`客户端 ${clientId} 已连接`);
+    console.log(`${getCurrentTimestamp()} 客户端 ${clientId} 已连接`);
     
     // 发送当前所有计时器数据
     ws.send(JSON.stringify({
@@ -235,19 +241,19 @@ wss.on('connection', (ws, req) => {
             // 处理消息
             handleClientMessage(clientId, data);
         } catch (error) {
-            console.error('无效消息：', error);
+            console.error(`${getCurrentTimestamp()} 无效消息：`, error);
         }
     });
     
     // 监听连接关闭
     ws.on('close', () => {
-        console.log(`客户端 ${clientId} 已断开连接`);
+        console.log(`${getCurrentTimestamp()} 客户端 ${clientId} 已断开连接`);
         clients.delete(clientId);
     });
     
     // 添加错误处理，防止未处理的错误导致服务器崩溃
     ws.on('error', (error) => {
-        console.error(`客户端 ${clientId} 连接错误:`, error.message);
+        console.error(`${getCurrentTimestamp()} 客户端 ${clientId} 连接错误:`, error.message);
         // 尝试优雅地关闭连接
         try {
             clients.delete(clientId);
@@ -255,7 +261,7 @@ wss.on('connection', (ws, req) => {
                 ws.close();
             }
         } catch (closeError) {
-            console.error(`关闭连接时出错: ${closeError.message}`);
+            console.error(`${getCurrentTimestamp()} 关闭连接时出错: ${closeError.message}`);
         }
     });
 });
@@ -416,9 +422,9 @@ function saveStudyStatsToFile() {
     
     try {
         fs.writeFileSync(filePath, JSON.stringify(dataToSave, null, 2));
-        console.log(`已保存学习统计数据到: ${filePath}`);
+        console.log(`${getCurrentTimestamp()} 已保存学习统计数据到: ${filePath}`);
     } catch (error) {
-        console.error('保存学习统计数据失败:', error);
+        console.error(`${getCurrentTimestamp()} 保存学习统计数据失败:`, error);
     }
 }
 
@@ -427,7 +433,7 @@ function checkAndResetTimers() {
     const newDayKey = getCurrentDayKey();
     
     if (newDayKey !== currentDayKey) {
-        console.log('执行每日重置');
+        console.log(`${getCurrentTimestamp()} 执行每日重置`);
         
         // 保存前一天的学习统计数据
         saveStudyStatsToFile();
@@ -475,7 +481,7 @@ function cleanupInactiveConnections() {
     
     clients.forEach((client, clientId) => {
         if (now - client.lastActive > timeout) {
-            console.log(`客户端 ${clientId} 不活跃，关闭连接`);
+            console.log(`${getCurrentTimestamp()} 客户端 ${clientId} 不活跃，关闭连接`);
             client.ws.terminate();
             clients.delete(clientId);
         }
@@ -494,6 +500,6 @@ setInterval(cleanupInactiveConnections, 60000);
 // 启动服务器
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`服务器运行在 http://localhost:${PORT}`);
-    console.log(`请确保在同一网络下使用IP地址访问，例如 http://[您的IP地址]:${PORT}`);
+    console.log(`${getCurrentTimestamp()} 服务器运行在 http://localhost:${PORT}`);
+    console.log(`${getCurrentTimestamp()} 请确保在同一网络下使用IP地址访问，例如 http://[您的IP地址]:${PORT}`);
 });

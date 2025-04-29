@@ -1,0 +1,32 @@
+{
+  "date": "2025-04-29",
+  "timers": {
+    "科研": {
+      "totalHours": 3,
+      "studiedHours": 0,
+      "studiedMinutes": 0,
+      "completionPercentage": 0,
+      "remainingHours": 3
+    },
+    "考研": {
+      "totalHours": 3,
+      "studiedHours": 0,
+      "studiedMinutes": 0,
+      "completionPercentage": 0,
+      "remainingHours": 3
+    },
+    "其他": {
+      "totalHours": 3,
+      "studiedHours": 0,
+      "studiedMinutes": 0,
+      "completionPercentage": 0,
+      "remainingHours": 3
+    }
+  },
+  "summary": {
+    "totalPossibleHours": 9,
+    "totalStudiedHours": 0,
+    "totalStudiedMinutes": 0,
+    "overallCompletion": 0
+  }
+}
